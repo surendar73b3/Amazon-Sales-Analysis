@@ -1,37 +1,37 @@
-# 🛒 Amazon Sales Analysis
+# 🛒 E-commerce Sales Analysis
 
 ## 📌 Project Overview
 
-This project analyzes Amazon e-commerce sales data using Python to uncover valuable business insights. The analysis focuses on data cleaning, exploratory data analysis (EDA), and visualization to identify sales trends, customer behavior, product performance, and pricing patterns.
+This project analyzes an Amazon e-commerce sales dataset (54,183 orders) using Python to uncover patterns in pricing, ratings, discounts, delivery performance, and returns. The analysis covers data cleaning, exploratory data analysis (EDA), outlier treatment, statistical transformation, and correlation analysis — with a focus on translating raw numbers into clear, defensible business insights.
 
-The project demonstrates practical data analysis skills using Python libraries such as Pandas, NumPy, Matplotlib, and Seaborn.
+The project demonstrates practical data analysis skills using Python libraries including Pandas, NumPy, Matplotlib, Seaborn, and SciPy.
 
 ---
 
 ## 🎯 Objectives
 
 - Clean and preprocess raw sales data.
-- Perform Exploratory Data Analysis (EDA).
-- Analyze product pricing and customer ratings.
-- Identify top-performing product categories.
-- Visualize important sales trends.
-- Generate actionable business insights.
+- Perform Exploratory Data Analysis (EDA) across pricing, ratings, and delivery.
+- Quantify the relationship between price, discount, and customer rating.
+- Evaluate and compare outlier-handling strategies for skewed price data.
+- Investigate delivery delays and return rates across operational variables.
+- Generate quantified, evidence-based insights rather than assumptions.
 
 ---
 
 ## 📊 Dataset
 
-- **Dataset Name:** Amazon E-commerce Dataset
-- **Format:** Excel (.xls)
-- **Records:** Approximately 5,000 products
-- **Features Include:**
-  - Product Name
-  - Category
-  - Actual Price
-  - Discounted Price
-  - Discount Percentage
-  - Ratings
-  - Rating Count
+- **Source:** Amazon e-commerce order dataset
+- **Format:** CSV
+- **Records:** 54,183 orders, 0 missing values
+- **Features include:**
+  - `category`, `subcategory`, `brand`
+  - `price`, `discount`, `final_price`
+  - `rating`, `review_count`, `seller_rating`
+  - `stock`, `shipping_time_days`, `delivery_status`, `is_returned`
+  - `purchase_date`, `location`, `device`, `payment_method`
+
+> **Note on data authenticity:** Category share is unusually even (19.8%–20.3% across all 5 categories) and brand share is similarly flat (~8% across 12 brands). Real-world retail data is typically skewed toward dominant categories/brands, so this near-uniform distribution suggests the dataset may be synthetically generated. This is treated as a caveat throughout the analysis rather than ignored.
 
 ---
 
@@ -39,72 +39,72 @@ The project demonstrates practical data analysis skills using Python libraries s
 
 - Python
 - Jupyter Notebook
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
+- Pandas, NumPy
+- Matplotlib, Seaborn
+- SciPy (Box-Cox transformation, KDE)
 
 ---
 
 ## 📈 Analysis Performed
 
-- Data Cleaning
-- Handling Missing Values
-- Data Type Conversion
-- Descriptive Statistics
-- Univariate Analysis
-- Bivariate Analysis
-- Correlation Analysis
-- Category-wise Product Analysis
-- Rating Distribution
-- Price Distribution
-- Discount Analysis
-
----
-
-## 📷 Visualizations
-
-The project includes multiple visualizations such as:
-
-- Histogram
-- Bar Chart
-- Box Plot
-- Count Plot
-- Scatter Plot
-- Heatmap
-- Correlation Matrix
+- Data cleaning and null-value checks
+- Outlier detection and treatment (IQR method, compared across drop / mean-replace / median-replace / custom strategies)
+- Descriptive statistics and skewness analysis
+- Univariate and bivariate analysis
+- Correlation analysis across price, rating, discount, and seller rating
+- Category- and brand-level segmentation
+- Box-Cox transformation for right-skewed price data
+- Delivery and returns analysis across location, device, category, brand, and payment method
+- Conditional probability analysis (category likelihood given high price)
 
 ---
 
 ## 🔍 Key Insights
 
-- **Price does not drive customer ratings.** The correlation between `price` and `rating` was close to zero ([value]), disproving the assumption that higher-priced products are perceived as higher quality. This suggests rating is driven by factors other than price — likely product quality, seller reliability, or delivery experience.
+- **Price and rating have a moderate positive relationship (r = 0.331).** Higher-priced items trend toward slightly higher ratings — this contradicts the common assumption that price has no bearing on perceived quality.
 
-- **`final_price` is derived from `price` and `discount`, confirmed by a strong correlation ([value]).** This served as a sanity check on data consistency rather than a new finding.
+- **`final_price` is strongly derived from `price` (r = 0.986)**, confirming internal data consistency as a sanity check.
 
-- **Category distribution is unusually balanced (~19–21% each across all 5 categories).** Real-world retail data is typically skewed toward a dominant category, so this near-uniform split suggests the dataset may be synthetically generated — an important caveat when drawing business conclusions from it.
+- **Price is right-skewed (skew = 2.14)** with a mean of $13,148 well above the median of $4,932. A **Box-Cox transformation** was applied to `final_price` (skew reduced from 2.24 toward normal) to support more reliable statistical analysis.
 
-- **`final_price` was right-skewed** (skewness = [value]), so a **Box-Cox transformation** was applied to normalize the distribution for more reliable statistical analysis.
+- **Outlier treatment on `price`** was evaluated using four approaches — dropping, mean replacement, median replacement, and a custom rule. Median replacement preserved the underlying distribution shape best, since it's less sensitive to the right skew than the mean.
 
-- **Outlier treatment on `price`** was evaluated using four approaches — dropping, mean replacement, median replacement, and a custom rule — compared via box plots and KDE plots. Median replacement preserved the distribution shape best, since it's less sensitive to skew than the mean.
+- **Category and brand distributions are unusually even** (all categories within 19.8%–20.3%; all brands within ~8.0%–8.5%), an anomaly for real retail data and a reason to treat other findings as directional rather than definitive.
 
-- **[Brand/category performance]:** [e.g., "Electronics made up the largest share of listings at X%, followed by..."] — fill in with your actual `value_counts()` output.
+- **11.8% of all orders were returned** (6,382 of 54,183). Return rate does not vary meaningfully by category, brand, or payment method (all within a ~1 percentage point spread), and correlates negligibly with rating (r = -0.04) — in this dataset, returns appear largely independent of these factors.
 
-- **Shipping times are spread fairly evenly across 1–6 days**, with 1-day delivery only slightly more common (~22%) than other windows — suggesting room to grow the fast-delivery segment if that's a strategic priority.
+- **29.5% of orders were delayed** — nearly matching the 29.5% delivered on time. Delay rate is essentially flat across location (29.0%–30.6%), device (29.0%–30.0%), and shipping window (27.1%–30.1%), suggesting delivery delays aren't driven by any operational factor captured in this dataset.
 
-- **Price vs. discount relationship:** [value] correlation — [interpret once you have the real number: e.g., "higher-priced items receive proportionally smaller discounts" or "no meaningful relationship between price and discount level"].
+- **Price shows a weak negative correlation with discount (r = -0.203)** — higher-priced items tend to receive slightly smaller percentage discounts.
+
+- **Seller rating shows no relationship with product rating (r = 0.0005)** — a seller's reputation score does not predict how customers rate the products they sell.
+
+- **High-price items (top 25% by `final_price`) are overwhelmingly Electronics (70.7%)**, followed by Home (21.8%) and Sports (7.4%) — the clearest category-level pricing pattern in the dataset.
+
+---
+
+## 📷 Visualizations
+
+The notebook includes:
+
+- Box plots and KDE plots comparing raw vs. outlier-treated price distributions
+- Histograms of price, discount, and stock
+- Bar charts of category, brand, subcategory, and shipping-time distributions
+- Scatter plots of price vs. rating (by category)
+- Correlation heatmaps (price/rating, price/final_price)
+- Box-Cox transformed density plot
 
 ---
 
 ## 📂 Project Structure
 
 ```
-Amazon-Sales-Analysis/
+Ecommerce-Sale-Analysis/
 │
-├── amazon_ecommerce_5k.xls
-├── Project_Assignment_Surendar_Poojala.html
+├── Analysis_Notebook.ipynb      # Full EDA, cleaning, and statistical analysis
+├── amazon_Sales_Dataset.csv     # Raw dataset (54,183 rows)
 ├── README.md
-└── images/ (Optional screenshots)
+└── img/                         # Exported chart images
 ```
 
 ---
@@ -112,51 +112,34 @@ Amazon-Sales-Analysis/
 ## 🚀 How to Run
 
 1. Clone the repository
-
-```bash
-git clone https://github.com/surendar73b3/Amazon-Sales-Analysis.git
-```
+   ```
+   git clone https://github.com/surendar73b3/Ecommerce-Sale-Analysis.git
+   ```
 
 2. Navigate to the project directory
-
-```bash
-cd Amazon-Sales-Analysis
-```
+   ```
+   cd Ecommerce-Sale-Analysis
+   ```
 
 3. Install required libraries
+   ```
+   pip install pandas numpy matplotlib seaborn scipy
+   ```
 
-```bash
-pip install pandas numpy matplotlib seaborn openpyxl
-```
-
-4. Open the Jupyter Notebook or HTML report to explore the analysis.
-
----
-
-## 📸 Project Preview
-
-You can add screenshots of your charts here for better presentation.
-
-Example:
-
-```
-images/
-├── rating_distribution.png
-├── correlation_heatmap.png
-├── price_distribution.png
-```
+4. Open `Analysis_Notebook.ipynb` in Jupyter or VS Code to explore the full analysis.
 
 ---
 
 ## 💡 Skills Demonstrated
 
-- Data Cleaning
-- Data Wrangling
+- Data Cleaning & Preprocessing
 - Exploratory Data Analysis (EDA)
+- Outlier Detection & Treatment
+- Statistical Transformation (Box-Cox)
+- Correlation & Conditional Probability Analysis
 - Data Visualization
+- Critical Evaluation of Data Quality
 - Business Insight Generation
-- Statistical Analysis
-- Python Programming
 
 ---
 
@@ -164,9 +147,7 @@ images/
 
 **Surendar Poojala**
 
-- 📧 Email: your-email@example.com
-- 💼 LinkedIn: https://www.linkedin.com/in/your-profile
-- 💻 GitHub: https://github.com/surendar73b3
+- 💻 GitHub: [surendar73b3](https://github.com/surendar73b3)
 
 ---
 
