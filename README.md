@@ -1,4 +1,4 @@
-# 🛒 E-commerce Sales Analysis
+# 🛒 Amazon Sales Analysis
 
 ## 📌 Project Overview
 
