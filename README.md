@@ -37,11 +37,11 @@ The project demonstrates practical data analysis skills using Python libraries i
 
 ## 🛠️ Technologies Used
 
-- Python
+- Python, MYSQL
 - Jupyter Notebook
 - Pandas, NumPy
 - Matplotlib, Seaborn
-- SciPy (Box-Cox transformation, KDE)
+
 
 ---
 
